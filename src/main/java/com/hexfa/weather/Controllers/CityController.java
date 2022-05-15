@@ -2,7 +2,6 @@ package com.hexfa.weather.Controllers;
 
 import com.hexfa.weather.Entity.City;
 import com.hexfa.weather.Model.CityItem;
-import com.hexfa.weather.Model.FiveDayForecast.Item5Day3HourForecast;
 import com.hexfa.weather.Model.FiveDayForecast.Response5Day3Hour;
 import com.hexfa.weather.Model.Result;
 import com.hexfa.weather.Model.ViewModel.AddCityViewModel;
@@ -53,8 +52,8 @@ public class CityController {
 
     @GetMapping(path = "/getAreaForecastInformation")
     public @ResponseBody
-    Result<Item5Day3HourForecast> getAreaForecastInformation(int id) {
-        return cityService.getAreaForecastInformation(id);
+    Result<Response5Day3Hour> getAreaForecastInformation(int lat,int lon,@RequestParam(required = false) Boolean fiveDay) {
+        return cityService.getAreaForecastInformation(lat,lon,fiveDay);
     }
 
     @GetMapping(path = "/get5Day3HourForecastInformation")
@@ -65,7 +64,8 @@ public class CityController {
 
     @GetMapping(path = "/getCityForecastInformation")
     public @ResponseBody
-    Result<CityItem> getCityForecastInformation(int id) {
-        return cityService.getCityForecastInformation(id);
+    Result<Response5Day3Hour> getCityForecastInformation(int id,@RequestParam(required = false) Boolean fiveDay) {
+        return cityService.getCityForecastInformation(id,fiveDay);
     }
+
 }

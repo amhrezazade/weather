@@ -6,7 +6,6 @@ import com.hexfa.weather.Helper.WeatherAPI;
 import com.hexfa.weather.Model.CityInfo.City_Info;
 import com.hexfa.weather.Model.CityInfo.Coord;
 import com.hexfa.weather.Model.CityItem;
-import com.hexfa.weather.Model.FiveDayForecast.Item5Day3HourForecast;
 import com.hexfa.weather.Model.FiveDayForecast.Response5Day3Hour;
 import com.hexfa.weather.Model.Result;
 import com.hexfa.weather.Model.ViewModel.AddCityViewModel;
@@ -14,6 +13,7 @@ import com.hexfa.weather.Model.ViewModel.City_ex;
 import com.hexfa.weather.Repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,22 +83,23 @@ public class CityService {
         }
     }
 
-    public Result<Item5Day3HourForecast> getAreaForecastInformation(int id)
+    public Result<Response5Day3Hour> getAreaForecastInformation(int lat,int lon,Boolean fiveDay)
     {
         try
         {
-            Optional<City> c;
-            c = cityRepository.findById(id);
-            if(c.isEmpty())
-                return new Result<>("City not found.");
-
-            CityAPI capi = new CityAPI();
+            Response5Day3Hour response5Day3Hour=new Response5Day3Hour();
             WeatherAPI api = new WeatherAPI();
 
-            Coord cord = capi.Get(c.get().getCityID()).getCoord();
+            if (fiveDay!=null && fiveDay){
+                response5Day3Hour=api.get5Day3HourForecastInformation(lat,lon);
+            }else {
+                CityItem cityItem=api.getAreaForecastInformation(lat,lon);
+                List<CityItem> array=new ArrayList<>();
+                array.add(cityItem);
+                response5Day3Hour.setList(array);
+            }
 
-
-            return new Result<>(api.getAreaForecastInformation(cord.getLat(),cord.getLon()));
+            return new Result<>(response5Day3Hour);
 
         }
         catch(Exception e) {
@@ -129,10 +130,11 @@ public class CityService {
         }
     }
 
-    public Result<CityItem> getCityForecastInformation(int id)
+    public Result<Response5Day3Hour> getCityForecastInformation(int id,Boolean fiveDay)
     {
         try
         {
+            Response5Day3Hour response5Day3Hour=new Response5Day3Hour();
             Optional<City> c;
             c = cityRepository.findById(id);
             if(c.isEmpty())
@@ -140,8 +142,18 @@ public class CityService {
 
             CityAPI capi = new CityAPI();
             WeatherAPI api = new WeatherAPI();
+            Coord cord = capi.Get(c.get().getCityID()).getCoord();
 
-            return new Result<>(api.getCityForecastInformation(c.get().getCityID()));
+            if (fiveDay!=null && fiveDay){
+                response5Day3Hour=api.get5Day3HourForecastInformation(cord.getLat(),cord.getLon());
+            }else {
+                CityItem cityItem=api.getCityForecastInformation(c.get().getCityID());
+                List<CityItem> array=new ArrayList<>();
+                array.add(cityItem);
+                response5Day3Hour.setList(array);
+            }
+
+            return new Result<>(response5Day3Hour);
 
         }
         catch(Exception e) {

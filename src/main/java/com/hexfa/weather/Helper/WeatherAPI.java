@@ -1,7 +1,6 @@
 package com.hexfa.weather.Helper;
 
 import com.hexfa.weather.Model.CityItem;
-import com.hexfa.weather.Model.FiveDayForecast.Item5Day3HourForecast;
 import com.hexfa.weather.Model.FiveDayForecast.Response5Day3Hour;
 import com.hexfa.weather.Model.ListForecastItem.ResponseCitiesForecast;
 import org.springframework.web.client.RestTemplate;
@@ -15,9 +14,9 @@ public class WeatherAPI {
 
 
 
-    public  Item5Day3HourForecast getAreaForecastInformation(double lat, double lon) {
+    public  CityItem getAreaForecastInformation(double lat, double lon) {
         String uri = BASE_UER+"weather?lat="+lat+"&lon="+lon+"&appid="+API_KEY;
-        return restTemplate.getForObject(uri, Item5Day3HourForecast.class);
+        return restTemplate.getForObject(uri, CityItem.class);
     }
 
     public  Response5Day3Hour get5Day3HourForecastInformation(double lat, double lon) {
