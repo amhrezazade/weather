@@ -7,6 +7,7 @@ public class AddUserViewModel {
     private String username;
     private String password;
     private double location_lat;
+
     private double location_lon;
 
     public String getFirst_name() {
